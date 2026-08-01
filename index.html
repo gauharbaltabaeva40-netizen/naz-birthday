@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>🎁 Назерке 18 жас — 3 бет</title>
+    <title>🎁 Назерке 18 жас — 2 бет</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet" />
     <style>
         /* === RESET & BASE === */
@@ -13,9 +13,14 @@
             box-sizing: border-box;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
             font-family: 'Montserrat', sans-serif;
-            overflow: hidden;
+            overflow-y: auto;
+            overflow-x: hidden;
             height: 100vh;
             width: 100vw;
             background: #1a0000;
@@ -45,8 +50,8 @@
             pointer-events: none;
         }
 
-        /* === ЖАЛПЫ БЕТ СТИЛЬДЕРІ === */
-        .page {
+        /* === СЮРПРИЗ БЕТІ === */
+        #page-surprise {
             position: fixed;
             top: 0;
             left: 0;
@@ -58,33 +63,18 @@
             justify-content: center;
             text-align: center;
             padding: 20px;
-            transition: opacity 0.9s cubic-bezier(0.34, 1.56, 0.64, 1),
-                transform 0.9s cubic-bezier(0.34, 1.56, 0.64, 1);
-            z-index: 10;
-            pointer-events: none;
-            opacity: 0;
-            transform: scale(0.95);
-        }
-
-        .page.active {
-            opacity: 1;
-            transform: scale(1);
-            pointer-events: auto;
-            z-index: 20;
-        }
-
-        .page>* {
-            pointer-events: auto;
-        }
-
-        /* === 1-БЕТ: СЮРПРИЗ === */
-        #page-surprise {
             background: radial-gradient(circle at center, #2a0000, #0d0000);
             z-index: 100;
             cursor: pointer;
+            transition: opacity 0.9s cubic-bezier(0.34, 1.56, 0.64, 1),
+                transform 0.9s cubic-bezier(0.34, 1.56, 0.64, 1);
+            pointer-events: auto;
         }
-        #page-surprise.active {
-            z-index: 100;
+
+        #page-surprise.hidden {
+            opacity: 0;
+            transform: scale(1.2);
+            pointer-events: none;
         }
 
         .gift-box {
@@ -152,10 +142,39 @@
             transition: opacity 0.05s ease;
         }
 
-        /* === 2-БЕТ: ҚҰТТЫҚТАУ === */
+        /* ============================================================
+           2-БЕТ: ҚҰТТЫҚТАУ + ТІЛЕКТЕР (бір бет, скроллмен)
+           ============================================================ */
         #page-congrats {
-            background: transparent;
+            position: relative;
             z-index: 50;
+            min-height: 100vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px 80px;
+            opacity: 0;
+            transform: scale(0.95);
+            transition: opacity 0.9s cubic-bezier(0.34, 1.56, 0.64, 1),
+                transform 0.9s cubic-bezier(0.34, 1.56, 0.64, 1);
+            pointer-events: none;
+        }
+
+        #page-congrats.revealed {
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: auto;
+        }
+
+        .congrats-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 20px 0 40px;
+            width: 100%;
+            max-width: 900px;
         }
 
         .cake-emoji {
@@ -245,106 +264,55 @@
             font-weight: 700;
         }
 
-        .next-btn {
-            margin-top: 2rem;
-            padding: 14px 40px;
-            font-size: 1.1rem;
-            font-weight: 700;
-            font-family: 'Montserrat', sans-serif;
-            color: #1a0000;
-            background: linear-gradient(135deg, #ffd700, #ff6b00);
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 40px rgba(255, 215, 0, 0.3), inset 0 0 20px rgba(255, 255, 255, 0.2);
-            letter-spacing: 2px;
-            position: relative;
-            overflow: hidden;
-        }
-        .next-btn::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 60%);
-            animation: rotateGlow 6s linear infinite;
-        }
-        @keyframes rotateGlow {
-            0% {
-                transform: rotate(0deg);
-            }
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-        .next-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 60px rgba(255, 215, 0, 0.6), inset 0 0 30px rgba(255, 255, 255, 0.3);
-        }
-        .next-btn:active {
-            transform: scale(0.95);
-        }
-        .next-btn span {
-            position: relative;
-            z-index: 1;
-        }
-
-        /* Скролл бағытын көрсету */
-        .scroll-hint {
-            margin-top: 1.5rem;
-            font-size: 0.9rem;
-            color: rgba(255, 255, 255, 0.3);
-            letter-spacing: 2px;
-            animation: blinkText 2s ease-in-out infinite;
-        }
-
-        /* === 3-БЕТ: ТІЛЕКТЕР === */
-        #page-wishes {
-            background: radial-gradient(circle at 30% 20%, #1f0505, #0a0000);
-            z-index: 30;
+        /* === ТІЛЕКТЕР БЛОГЫ (2-беттің жалғасы) === */
+        .wishes-section {
+            width: 100%;
+            max-width: 1000px;
+            margin-top: 3rem;
+            padding: 20px 20px 60px;
+            border-top: 2px solid rgba(255, 215, 0, 0.15);
         }
 
         .wishes-title {
             font-family: 'Playfair Display', serif;
-            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-size: clamp(2rem, 4vw, 3.2rem);
             color: #ffd700;
-            text-shadow: 0 0 50px rgba(255, 215, 0, 0.3);
-            margin-bottom: 1.5rem;
-            letter-spacing: 4px;
+            text-shadow: 0 0 40px rgba(255, 215, 0, 0.2);
+            margin-bottom: 2rem;
+            letter-spacing: 3px;
+            text-align: center;
         }
 
         .wishes-container {
             display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-            gap: 1rem 1.5rem;
-            max-width: 1000px;
-            padding: 0 20px;
+            gap: 1.2rem;
+            width: 100%;
             perspective: 800px;
-            min-height: 300px;
         }
 
         .wish-item {
             font-family: 'Playfair Display', serif;
-            font-size: clamp(1.1rem, 2vw, 1.6rem);
-            font-weight: 700;
-            background: rgba(255, 215, 0, 0.08);
-            backdrop-filter: blur(6px);
-            -webkit-backdrop-filter: blur(6px);
-            border: 1px solid rgba(255, 215, 0, 0.35);
-            border-radius: 60px;
-            padding: 0.7rem 2rem;
+            font-size: clamp(1rem, 1.8vw, 1.5rem);
+            font-weight: 600;
+            background: rgba(255, 215, 0, 0.06);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 20px;
+            padding: 1.2rem 2rem;
             color: #fff4d6;
-            text-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
-            box-shadow: 0 0 30px rgba(255, 0, 0, 0.15);
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.1);
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.08);
+            width: 100%;
+            max-width: 750px;
+            text-align: center;
+            line-height: 1.6;
+            letter-spacing: 0.5px;
             opacity: 0;
-            transform: translate(0, 0) scale(0) rotate(360deg);
-            white-space: nowrap;
-            letter-spacing: 1px;
+            transform: translateX(-40px) scale(0.95);
+            transition: none;
             will-change: transform, opacity;
         }
 
@@ -355,26 +323,53 @@
         @keyframes wishBoom {
             0% {
                 opacity: 0;
-                transform: translate(0, 0) scale(0) rotate(720deg);
+                transform: translateX(-60px) scale(0.8) rotate(-5deg);
             }
-            50% {
+            40% {
                 opacity: 1;
-                transform: translate(var(--tx, 0px), var(--ty, 0px)) scale(1.3) rotate(-10deg);
+                transform: translateX(8px) scale(1.05) rotate(2deg);
             }
             70% {
-                transform: translate(var(--tx, 0px), var(--ty, 0px)) scale(0.95) rotate(5deg);
+                transform: translateX(-4px) scale(0.98) rotate(-1deg);
             }
             100% {
                 opacity: 1;
-                transform: translate(var(--tx, 0px), var(--ty, 0px)) scale(1) rotate(0deg);
+                transform: translateX(0) scale(1) rotate(0deg);
             }
         }
 
-        /* === ДЕКОРАТИВТІ ЭЛЕМЕНТТЕР (ортақ) === */
+        /* Скролл бағытын көрсету */
+        .scroll-hint {
+            margin-top: 2rem;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.25);
+            letter-spacing: 3px;
+            animation: blinkText 2.5s ease-in-out infinite;
+            text-align: center;
+        }
+
+        .scroll-hint-down {
+            margin-top: 0.5rem;
+            font-size: 2rem;
+            animation: bounceArrow 2s ease-in-out infinite;
+            text-align: center;
+        }
+
+        @keyframes bounceArrow {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(10px);
+            }
+        }
+
+        /* === ДЕКОРАТИВТІ ЭЛЕМЕНТТЕР === */
         .ornament {
-            position: absolute;
+            position: fixed;
             font-size: 3rem;
-            opacity: 0.3;
+            opacity: 0.2;
             animation: floatOrnament 8s ease-in-out infinite;
             pointer-events: none;
             z-index: 0;
@@ -427,13 +422,13 @@
         }
 
         .balloon {
-            position: absolute;
+            position: fixed;
             font-size: 4rem;
-            opacity: 0.4;
+            opacity: 0.3;
             animation: floatBalloon 12s ease-in-out infinite;
             pointer-events: none;
             z-index: 0;
-            filter: drop-shadow(0 0 10px rgba(255, 0, 0, 0.3));
+            filter: drop-shadow(0 0 10px rgba(255, 0, 0, 0.2));
         }
         .balloon:nth-child(7) {
             top: 5%;
@@ -474,9 +469,9 @@
         }
 
         .glow-ring {
-            position: absolute;
+            position: fixed;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(255, 0, 0, 0.15) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(255, 0, 0, 0.1) 0%, transparent 70%);
             pointer-events: none;
             z-index: 0;
             animation: pulseGlow 4s ease-in-out infinite;
@@ -495,7 +490,7 @@
             left: 50%;
             transform: translate(-50%, -50%);
             animation-delay: 2s;
-            background: radial-gradient(circle, rgba(255, 215, 0, 0.05) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.04) 0%, transparent 70%);
         }
         @keyframes pulseGlow {
             0%,
@@ -559,16 +554,12 @@
                 font-size: 3rem !important;
             }
             .wish-item {
-                font-size: clamp(0.85rem, 2vw, 1.1rem);
-                padding: 0.4rem 1.2rem;
-                white-space: nowrap;
+                font-size: clamp(0.9rem, 2vw, 1.1rem);
+                padding: 1rem 1.2rem;
+                border-radius: 16px;
             }
-            .wishes-container {
-                gap: 0.6rem 0.8rem;
-            }
-            .next-btn {
-                padding: 12px 30px;
-                font-size: 1rem;
+            .wishes-section {
+                padding: 20px 10px 40px;
             }
             .scroll-hint {
                 font-size: 0.7rem;
@@ -591,8 +582,8 @@
                 font-size: clamp(3rem, 10vw, 4.5rem);
             }
             .wish-item {
-                font-size: clamp(0.7rem, 2.5vw, 0.9rem);
-                padding: 0.3rem 0.9rem;
+                font-size: clamp(0.8rem, 2.5vw, 0.95rem);
+                padding: 0.8rem 1rem;
             }
         }
 
@@ -628,43 +619,41 @@
     <!-- ============================================================
     1-БЕТ: СЮРПРИЗ
     ============================================================ -->
-    <div class="page active" id="page-surprise">
+    <div id="page-surprise">
         <div class="gift-box">🎁</div>
         <div class="surprise-title">Назеркеге арналған сюрприз...</div>
         <div class="surprise-sub">✦ Ашу үшін бас ✦</div>
     </div>
 
     <!-- ============================================================
-    2-БЕТ: ҚҰТТЫҚТАУ
+    2-БЕТ: ҚҰТТЫҚТАУ + ТІЛЕКТЕР (бір бет)
     ============================================================ -->
-    <div class="page" id="page-congrats">
-        <div class="cake-emoji">
-            🎂
-            <span class="flame">🔥</span>
-        </div>
-        <div class="age-number">18</div>
-        <div class="name-title">Назерке</div>
-        <div class="sub-title">✨ Туған күніңмен! ✨</div>
-        <div class="birthday-message">
-            <span>Назерке</span>, бүгін сенің ерекше күнің! 🎉<br />
-            18 жас — өмірдің жаңа беті, жаңа мүмкіндіктер мен
-            <span>бақытты сәттер</span> толы жолың болсын!<br />
-            Армандарың орындалып, жүрегің <span>махаббат</span> пен
-            <span>қуанышқа</span> толы болсын! ❤️
-        </div>
-        <button class="next-btn" id="goToWishesBtn">
-            <span>🎉 Тілектерге өту →</span>
-        </button>
-        <div class="scroll-hint">↓ Төмен скролл жасаңыз ↓</div>
-    </div>
+    <div id="page-congrats">
+        <div class="congrats-content">
+            <div class="cake-emoji">
+                🎂
+                <span class="flame">🔥</span>
+            </div>
+            <div class="age-number">18</div>
+            <div class="name-title">Назерке</div>
+            <div class="sub-title">✨ Туған күніңмен! ✨</div>
+            <div class="birthday-message">
+                <span>Назерке</span>, бүгін сенің ерекше күнің! 🎉<br />
+                18 жас — өмірдің жаңа беті, жаңа мүмкіндіктер мен
+                <span>бақытты сәттер</span> толы жолың болсын!<br />
+                Армандарың орындалып, жүрегің <span>махаббат</span> пен
+                <span>қуанышқа</span> толы болсын! ❤️
+            </div>
 
-    <!-- ============================================================
-    3-БЕТ: ТІЛЕКТЕР
-    ============================================================ -->
-    <div class="page" id="page-wishes">
-        <div class="wishes-title">💫 Назеркеге тілектер</div>
-        <div class="wishes-container" id="wishesContainer"></div>
-        <div class="scroll-hint" style="margin-top:2rem;">↑ Жоғары скролл → 2-бетке оралу</div>
+            <div class="scroll-hint">↓ Төмен скролл — тілектер ↓</div>
+            <div class="scroll-hint-down">⬇️</div>
+        </div>
+
+        <!-- === ТІЛЕКТЕР БЛОГЫ (2-беттің жалғасы) === -->
+        <div class="wishes-section" id="wishesSection">
+            <div class="wishes-title">💫 Назеркеге арналған тілектер</div>
+            <div class="wishes-container" id="wishesContainer"></div>
+        </div>
     </div>
 
     <script>
@@ -850,167 +839,116 @@
         }
 
         // ================================================================
-        //  4. ТІЛЕКТЕР (Wishes)
+        //  4. ТІЛЕКТЕР (ұзағырақ, реттелген)
         // ================================================================
         const wishesList = [
-            "🥳 18 жас - үлкен белес!",
-            "🌟 Арманың орындалсын!",
-            "❤️ Махаббатқа толы бол!",
-            "💪 Табысқа жет!",
-            "🍀 Бақытты бол!",
-            "☀️ Өмірің жарқын болсын!",
-            "💖 Қуаныш күлімдесін!",
-            "✨ Денің сау болсын!"
+            "🌟 Назерке, 18 жас — бұл жаңа белес, жаңа мүмкіндіктер мен жаңа армандардың бастамасы! Алда тек табыс пен қуаныш күтсін!",
+            "❤️ Сенің жүрегің әрқашан махаббатқа, достыққа және жақсылыққа толы болсын! Әр күнің мейірім мен жылылыққа бөленсін!",
+            "💪 Өміріңдегі барлық мақсаттарың оңайлықпен орындалып, армандарың шындыққа айналсын! Сен күшті және батылсың!",
+            "🍀 Бақыт пен сәттілік әрқашан сенімен бірге жүрсін! Әр күнің күлкі мен шаттыққа, қызықты оқиғаларға толы болсын!",
+            "☀️ Өмірің жарқын және жылы күндерге толы болсын! Әр таңың сәттілікпен басталып, әр кешің рахатпен аяқталсын!",
+            "💖 Қуаныш пен бақыт сенің тұрақты серігің болсын! Жүрегің әрдайым шаттықпен соғып, алдыңнан тек жақсы адамдар кездессін!"
         ];
 
+        let wishesSpawned = false;
+
         function spawnWishes() {
+            if (wishesSpawned) return;
+            wishesSpawned = true;
+
             const container = document.getElementById('wishesContainer');
             container.innerHTML = '';
             const shuffled = [...wishesList].sort(() => Math.random() - 0.5);
+
             shuffled.forEach((text, index) => {
                 const el = document.createElement('div');
                 el.className = 'wish-item';
                 el.textContent = text;
-                const tx = (Math.random() - 0.5) * 140;
-                const ty = (Math.random() - 0.5) * 140;
-                el.style.setProperty('--tx', tx + 'px');
-                el.style.setProperty('--ty', ty + 'px');
                 container.appendChild(el);
-                const delay = 0.1 + index * 0.1;
-                setTimeout(() => { el.classList.add('boom-visible'); }, delay * 1000);
+
+                const delay = 0.15 + index * 0.15;
+                setTimeout(() => {
+                    el.classList.add('boom-visible');
+                }, delay * 1000);
             });
+
+            // Қосымша конфетти
+            setTimeout(() => {
+                startConfetti(80);
+                burstHearts(15);
+            }, 600);
+            setTimeout(() => {
+                startConfetti(50);
+                burstHearts(10);
+            }, 1800);
         }
 
         // ================================================================
-        //  5. БЕТТЕРДІ БАСҚАРУ (Page Navigation)
+        //  5. СЮРПРИЗДЕН ҚҰТТЫҚТАУҒА
         // ================================================================
         const pageSurprise = document.getElementById('page-surprise');
         const pageCongrats = document.getElementById('page-congrats');
-        const pageWishes = document.getElementById('page-wishes');
         const boomFlash = document.getElementById('boomFlash');
-
         let isRevealed = false;
-        let currentPage = 0; // 0:surprise, 1:congrats, 2:wishes
-        let isPageTransitioning = false;
+        let wishesTriggered = false;
 
-        function showPage(pageId) {
-            [pageSurprise, pageCongrats, pageWishes].forEach(p => p.classList.remove('active'));
-            if (pageId === 'surprise') { pageSurprise.classList.add('active');
-                currentPage = 0; } else if (pageId === 'congrats') { pageCongrats.classList.add('active');
-                currentPage = 1; } else if (pageId === 'wishes') { pageWishes.classList.add('active');
-                currentPage = 2; }
-        }
-
-        // --- СЮРПРИЗДЕН ҚҰТТЫҚТАУҒА ---
         function triggerBoom() {
             if (isRevealed) return;
             isRevealed = true;
 
-            // Flash
             boomFlash.classList.add('active');
             setTimeout(() => boomFlash.classList.remove('active'), 300);
 
-            // Конфетти + жүректер
             startConfetti(400);
             burstHearts(60);
 
-            // 1-бетті жасырып, 2-бетті көрсету
-            showPage('congrats');
+            pageSurprise.classList.add('hidden');
+            pageCongrats.classList.add('revealed');
 
-            // Қосымша толқындар
             setTimeout(() => startConfetti(200), 600);
             setTimeout(() => startConfetti(150), 1400);
             setTimeout(() => burstHearts(30), 1000);
+
+            // Скролл бақылау — тілектер секциясы көрінгенде автоматты түрде іске қосу
+            setupWishesTrigger();
         }
 
-        // --- ҚҰТТЫҚТАУДАН ТІЛЕКТЕРГЕ ---
-        function goToWishes() {
-            if (pageWishes.classList.contains('active')) return;
-            if (isPageTransitioning) return;
-            isPageTransitioning = true;
+        // ================================================================
+        //  6. ТІЛЕКТЕРДІ АВТОМАТТЫ ТҮРДЕ ІСКЕ ҚОСУ (скролл кезінде)
+        // ================================================================
+        function setupWishesTrigger() {
+            const wishesSection = document.getElementById('wishesSection');
+            let hasTriggered = false;
 
-            showPage('wishes');
-            // Тілектерді іске қосу
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && !hasTriggered && isRevealed) {
+                        hasTriggered = true;
+                        spawnWishes();
+                    }
+                });
+            }, {
+                threshold: 0.15,
+                rootMargin: '0px 0px 100px 0px'
+            });
+
+            observer.observe(wishesSection);
+
+            // Егер скролл жасамаса да, 4 секундтан кейін өздігінен іске қосу
             setTimeout(() => {
-                spawnWishes();
-                startConfetti(120);
-                burstHearts(25);
-            }, 400);
-            setTimeout(() => startConfetti(80), 1500);
-            setTimeout(() => burstHearts(15), 1200);
-            setTimeout(() => { isPageTransitioning = false; }, 800);
-        }
-
-        // --- ТІЛЕКТЕРДЕН ҚҰТТЫҚТАУҒА ОРАЛУ ---
-        function goToCongrats() {
-            if (pageCongrats.classList.contains('active')) return;
-            if (isPageTransitioning) return;
-            isPageTransitioning = true;
-            showPage('congrats');
-            // Кішкене конфетти
-            startConfetti(50);
-            burstHearts(10);
-            setTimeout(() => { isPageTransitioning = false; }, 800);
-        }
-
-        // ================================================================
-        //  6. СКРОЛЛ ЖӘНЕ СЕНСОРЛЫҚ БАСҚАРУ
-        // ================================================================
-        // Тышқан дөңгелегі (wheel)
-        let scrollLock = false;
-        window.addEventListener('wheel', (e) => {
-            if (scrollLock) return;
-            if (!isRevealed) return; // Тек сюрприз ашылғаннан кейін
-
-            const delta = e.deltaY;
-            // Төмен скролл -> 3-бет
-            if (delta > 20 && currentPage === 1) {
-                scrollLock = true;
-                goToWishes();
-                setTimeout(() => { scrollLock = false; }, 1200);
-            }
-            // Жоғары скролл -> 2-бет
-            else if (delta < -20 && currentPage === 2) {
-                scrollLock = true;
-                goToCongrats();
-                setTimeout(() => { scrollLock = false; }, 1200);
-            }
-        }, { passive: true });
-
-        // Мобильді сенсорлық (touch)
-        let touchStartY = 0;
-        window.addEventListener('touchstart', (e) => {
-            touchStartY = e.changedTouches[0].screenY;
-        }, { passive: true });
-
-        window.addEventListener('touchend', (e) => {
-            if (!isRevealed) return;
-            if (scrollLock) return;
-            const diff = touchStartY - e.changedTouches[0].screenY;
-            if (Math.abs(diff) > 50) {
-                if (diff > 0 && currentPage === 1) {
-                    scrollLock = true;
-                    goToWishes();
-                    setTimeout(() => { scrollLock = false; }, 1200);
-                } else if (diff < 0 && currentPage === 2) {
-                    scrollLock = true;
-                    goToCongrats();
-                    setTimeout(() => { scrollLock = false; }, 1200);
+                if (!hasTriggered && isRevealed) {
+                    hasTriggered = true;
+                    spawnWishes();
+                    // Тілектер блогына жылдам скролл
+                    wishesSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
-            }
-        }, { passive: true });
+            }, 5000);
+        }
 
         // ================================================================
         //  7. ОҚИҒАЛАРДЫ БАЙЛАНЫСТЫРУ
         // ================================================================
-        // 1-бет: басу арқылы
         pageSurprise.addEventListener('click', triggerBoom);
-
-        // 2-бет: «Тілектерге өту» батырмасы
-        document.getElementById('goToWishesBtn').addEventListener('click', (e) => {
-            e.stopPropagation();
-            goToWishes();
-        });
 
         // Клавиатура: пробел / Enter
         document.addEventListener('keydown', (e) => {
@@ -1018,10 +956,13 @@
                 e.preventDefault();
                 if (!isRevealed) {
                     triggerBoom();
-                } else if (currentPage === 1) {
-                    goToWishes();
-                } else if (currentPage === 2) {
-                    // Қайта тілектерді жаңарту
+                } else if (!wishesSpawned) {
+                    spawnWishes();
+                    document.getElementById('wishesSection').scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    // Тілектерді қайта жаңарту
+                    document.getElementById('wishesContainer').innerHTML = '';
+                    wishesSpawned = false;
                     spawnWishes();
                     startConfetti(150);
                     burstHearts(30);
@@ -1029,33 +970,28 @@
             }
         });
 
-        // Авто-сюрприз (егер баспаса, 3.5 секундтан кейін)
+        // Авто-сюрприз (3.5 секундтан кейін)
         setTimeout(() => {
             if (!isRevealed) triggerBoom();
         }, 3500);
 
         // ================================================================
-        //  8. ПАРАЛЛАКС (тышқан)
+        //  8. ПАРАЛЛАКС
         // ================================================================
         document.addEventListener('mousemove', (e) => {
+            if (!pageCongrats.classList.contains('revealed')) return;
             const x = (e.clientX / window.innerWidth - 0.5) * 10;
             const y = (e.clientY / window.innerHeight - 0.5) * 10;
             const age = document.querySelector('.age-number');
             const name = document.querySelector('.name-title');
             const cake = document.querySelector('.cake-emoji');
-            if (age && pageCongrats.classList.contains('active')) {
-                age.style.transform = `translate(${x * 0.5}px, ${y * 0.5}px)`;
-            }
-            if (name && pageCongrats.classList.contains('active')) {
-                name.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
-            }
-            if (cake && pageCongrats.classList.contains('active')) {
-                cake.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
-            }
+            if (age) age.style.transform = `translate(${x * 0.5}px, ${y * 0.5}px)`;
+            if (name) name.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
+            if (cake) cake.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
         });
 
         // ================================================================
-        //  9. АВТО-КОНФЕТТИ (әр 20 секунд)
+        //  9. АВТО-КОНФЕТТИ
         // ================================================================
         setInterval(() => {
             if (isRevealed && !confettiRunning) {
@@ -1064,7 +1000,7 @@
             }
         }, 20000);
 
-        console.log('🎁 3 бет дайын! Төмен скролл жасап, тілектерді көріңіз! 🎉');
+        console.log('🎁 Назерке 18 жас! Тілектер 2-беттің жалғасы! 🎉');
     </script>
 </body>
 </html>
