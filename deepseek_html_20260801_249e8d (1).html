@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🎁 Назерке 18 жас — 3 бет</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet" />
+    <style>
+        /* === RESET & BASE === */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            background: #1a0000;
+            color: #fff;
+            user-select: none;
+        }
+
+        /* === CANVAS (фондық бөлшектер) === */
+        #particlesCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* === CONFETTI CANVAS === */
+        #confettiCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* === ЖАЛПЫ БЕТ СТИЛЬДЕРІ === */
+        .page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+            transition: opacity 0.9s cubic-bezier(0.34, 1.56, 0.64, 1),
+                transform 0.9s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 10;
+            pointer-events: none;
+            opacity: 0;
+            transform: scale(0.95);
+        }
+
+        .page.active {
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: auto;
+            z-index: 20;
+        }
+
+        .page>* {
+            pointer-events: auto;
+        }
+
+        /* === 1-БЕТ: СЮРПРИЗ === */
+        #page-surprise {
+            background: radial-gradient(circle at center, #2a0000, #0d0000);
+            z-index: 100;
+            cursor: pointer;
+        }
+        #page-surprise.active {
+            z-index: 100;
+        }
+
+        .gift-box {
+            font-size: clamp(8rem, 25vw, 16rem);
+            animation: pulseGift 1.8s ease-in-out infinite;
+            filter: drop-shadow(0 0 60px rgba(255, 215, 0, 0.6));
+            transition: transform 0.3s ease;
+        }
+        #page-surprise:hover .gift-box {
+            transform: scale(1.05) rotate(-5deg);
+        }
+
+        @keyframes pulseGift {
+            0%,
+            100% {
+                transform: scale(1) rotate(0deg);
+            }
+            50% {
+                transform: scale(1.06) rotate(3deg);
+            }
+        }
+
+        .surprise-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 5vw, 4rem);
+            color: #ffd700;
+            text-shadow: 0 0 40px rgba(255, 215, 0, 0.4);
+            margin-top: 1rem;
+            letter-spacing: 4px;
+        }
+
+        .surprise-sub {
+            font-size: clamp(1rem, 2vw, 1.6rem);
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 0.5rem;
+            letter-spacing: 6px;
+            animation: blinkText 1.5s ease-in-out infinite;
+        }
+
+        @keyframes blinkText {
+            0%,
+            100% {
+                opacity: 0.4;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+
+        /* === BOOM FLASH === */
+        .boom-flash {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, #fff 0%, #ff1a1a 100%);
+            z-index: 999;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.1s ease;
+        }
+        .boom-flash.active {
+            opacity: 0.9;
+            transition: opacity 0.05s ease;
+        }
+
+        /* === 2-БЕТ: ҚҰТТЫҚТАУ === */
+        #page-congrats {
+            background: transparent;
+            z-index: 50;
+        }
+
+        .cake-emoji {
+            font-size: clamp(4rem, 10vw, 7rem);
+            display: inline-block;
+            animation: bounceCake 3s ease-in-out infinite;
+            filter: drop-shadow(0 0 30px rgba(255, 215, 0, 0.4));
+            margin-bottom: 0.2rem;
+        }
+        @keyframes bounceCake {
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-15px) rotate(5deg);
+            }
+        }
+        .flame {
+            display: inline-block;
+            animation: flicker 0.3s ease-in-out infinite alternate;
+        }
+        @keyframes flicker {
+            0% {
+                transform: scale(1) rotate(-2deg);
+            }
+            100% {
+                transform: scale(1.1) rotate(2deg);
+            }
+        }
+
+        .age-number {
+            font-size: clamp(10rem, 25vw, 18rem);
+            font-weight: 900;
+            background: linear-gradient(135deg, #ff1a1a, #ffd700, #ff1a1a);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shimmerGold 4s ease-in-out infinite;
+            line-height: 1;
+            text-shadow: 0 0 60px rgba(255, 0, 0, 0.5), 0 0 120px rgba(255, 215, 0, 0.3);
+            letter-spacing: 4px;
+        }
+        @keyframes shimmerGold {
+            0%,
+            100% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+
+        .name-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 0 0 30px rgba(255, 0, 0, 0.6), 0 0 60px rgba(255, 0, 0, 0.4), 0 0 100px rgba(255, 215, 0, 0.2);
+            margin-top: -0.3em;
+            letter-spacing: 6px;
+        }
+
+        .sub-title {
+            font-size: clamp(1.2rem, 2.5vw, 2.2rem);
+            font-weight: 300;
+            color: rgba(255, 215, 0, 0.9);
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            margin-top: 0.2rem;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+        }
+
+        .birthday-message {
+            max-width: 700px;
+            margin-top: 1.5rem;
+            font-size: clamp(1rem, 1.5vw, 1.4rem);
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.85);
+            line-height: 1.8;
+            padding: 0 20px;
+            text-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+        .birthday-message span {
+            color: #ffd700;
+            font-weight: 700;
+        }
+
+        .next-btn {
+            margin-top: 2rem;
+            padding: 14px 40px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            font-family: 'Montserrat', sans-serif;
+            color: #1a0000;
+            background: linear-gradient(135deg, #ffd700, #ff6b00);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.3), inset 0 0 20px rgba(255, 255, 255, 0.2);
+            letter-spacing: 2px;
+            position: relative;
+            overflow: hidden;
+        }
+        .next-btn::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 60%);
+            animation: rotateGlow 6s linear infinite;
+        }
+        @keyframes rotateGlow {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        .next-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 60px rgba(255, 215, 0, 0.6), inset 0 0 30px rgba(255, 255, 255, 0.3);
+        }
+        .next-btn:active {
+            transform: scale(0.95);
+        }
+        .next-btn span {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Скролл бағытын көрсету */
+        .scroll-hint {
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.3);
+            letter-spacing: 2px;
+            animation: blinkText 2s ease-in-out infinite;
+        }
+
+        /* === 3-БЕТ: ТІЛЕКТЕР === */
+        #page-wishes {
+            background: radial-gradient(circle at 30% 20%, #1f0505, #0a0000);
+            z-index: 30;
+        }
+
+        .wishes-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            color: #ffd700;
+            text-shadow: 0 0 50px rgba(255, 215, 0, 0.3);
+            margin-bottom: 1.5rem;
+            letter-spacing: 4px;
+        }
+
+        .wishes-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem 1.5rem;
+            max-width: 1000px;
+            padding: 0 20px;
+            perspective: 800px;
+            min-height: 300px;
+        }
+
+        .wish-item {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.1rem, 2vw, 1.6rem);
+            font-weight: 700;
+            background: rgba(255, 215, 0, 0.08);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            border: 1px solid rgba(255, 215, 0, 0.35);
+            border-radius: 60px;
+            padding: 0.7rem 2rem;
+            color: #fff4d6;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.15);
+            opacity: 0;
+            transform: translate(0, 0) scale(0) rotate(360deg);
+            white-space: nowrap;
+            letter-spacing: 1px;
+            will-change: transform, opacity;
+        }
+
+        .wish-item.boom-visible {
+            animation: wishBoom 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        @keyframes wishBoom {
+            0% {
+                opacity: 0;
+                transform: translate(0, 0) scale(0) rotate(720deg);
+            }
+            50% {
+                opacity: 1;
+                transform: translate(var(--tx, 0px), var(--ty, 0px)) scale(1.3) rotate(-10deg);
+            }
+            70% {
+                transform: translate(var(--tx, 0px), var(--ty, 0px)) scale(0.95) rotate(5deg);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(var(--tx, 0px), var(--ty, 0px)) scale(1) rotate(0deg);
+            }
+        }
+
+        /* === ДЕКОРАТИВТІ ЭЛЕМЕНТТЕР (ортақ) === */
+        .ornament {
+            position: absolute;
+            font-size: 3rem;
+            opacity: 0.3;
+            animation: floatOrnament 8s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .ornament:nth-child(1) {
+            top: 8%;
+            left: 5%;
+            animation-delay: 0s;
+            font-size: 4rem;
+        }
+        .ornament:nth-child(2) {
+            top: 15%;
+            right: 8%;
+            animation-delay: 1.5s;
+            font-size: 3.5rem;
+        }
+        .ornament:nth-child(3) {
+            bottom: 20%;
+            left: 10%;
+            animation-delay: 3s;
+            font-size: 4.5rem;
+        }
+        .ornament:nth-child(4) {
+            bottom: 12%;
+            right: 5%;
+            animation-delay: 4.5s;
+            font-size: 3rem;
+        }
+        .ornament:nth-child(5) {
+            top: 45%;
+            left: 2%;
+            animation-delay: 2s;
+            font-size: 2.5rem;
+        }
+        .ornament:nth-child(6) {
+            top: 40%;
+            right: 2%;
+            animation-delay: 3.5s;
+            font-size: 2.5rem;
+        }
+
+        @keyframes floatOrnament {
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg) scale(1);
+            }
+            50% {
+                transform: translateY(-30px) rotate(10deg) scale(1.1);
+            }
+        }
+
+        .balloon {
+            position: absolute;
+            font-size: 4rem;
+            opacity: 0.4;
+            animation: floatBalloon 12s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+            filter: drop-shadow(0 0 10px rgba(255, 0, 0, 0.3));
+        }
+        .balloon:nth-child(7) {
+            top: 5%;
+            left: 20%;
+            animation-delay: 0s;
+            font-size: 5rem;
+        }
+        .balloon:nth-child(8) {
+            top: 10%;
+            right: 25%;
+            animation-delay: 2s;
+            font-size: 4.5rem;
+        }
+        .balloon:nth-child(9) {
+            bottom: 8%;
+            left: 25%;
+            animation-delay: 4s;
+            font-size: 5.5rem;
+        }
+        .balloon:nth-child(10) {
+            bottom: 15%;
+            right: 20%;
+            animation-delay: 1s;
+            font-size: 4rem;
+        }
+
+        @keyframes floatBalloon {
+            0%,
+            100% {
+                transform: translateY(0) rotate(-5deg) scale(1);
+            }
+            25% {
+                transform: translateY(-20px) rotate(3deg) scale(1.05);
+            }
+            75% {
+                transform: translateY(15px) rotate(-3deg) scale(0.95);
+            }
+        }
+
+        .glow-ring {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 0, 0, 0.15) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+            animation: pulseGlow 4s ease-in-out infinite;
+        }
+        .glow-ring:nth-child(11) {
+            width: 90vmin;
+            height: 90vmin;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .glow-ring:nth-child(12) {
+            width: 120vmin;
+            height: 120vmin;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-delay: 2s;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.05) 0%, transparent 70%);
+        }
+        @keyframes pulseGlow {
+            0%,
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.6;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.05);
+                opacity: 1;
+            }
+        }
+
+        /* === ҰШАТЫН ЖҮРЕКТЕР (DOM) === */
+        .heart-float {
+            position: fixed;
+            font-size: 1.8rem;
+            pointer-events: none;
+            z-index: 3;
+            animation: heartRise 4s ease-out forwards;
+            opacity: 0;
+        }
+        @keyframes heartRise {
+            0% {
+                opacity: 0;
+                transform: translateY(100vh) scale(0) rotate(0deg);
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-10vh) scale(1.2) rotate(720deg);
+            }
+        }
+
+        /* === RESPONSIVE === */
+        @media (max-width: 768px) {
+            .age-number {
+                font-size: clamp(6rem, 20vw, 10rem);
+            }
+            .name-title {
+                font-size: clamp(2.2rem, 8vw, 3.5rem);
+                letter-spacing: 3px;
+            }
+            .sub-title {
+                font-size: clamp(0.9rem, 2vw, 1.3rem);
+                letter-spacing: 4px;
+            }
+            .birthday-message {
+                font-size: clamp(0.9rem, 2vw, 1.1rem);
+                padding: 0 15px;
+            }
+            .ornament {
+                font-size: 2rem !important;
+            }
+            .balloon {
+                font-size: 3rem !important;
+            }
+            .wish-item {
+                font-size: clamp(0.85rem, 2vw, 1.1rem);
+                padding: 0.4rem 1.2rem;
+                white-space: nowrap;
+            }
+            .wishes-container {
+                gap: 0.6rem 0.8rem;
+            }
+            .next-btn {
+                padding: 12px 30px;
+                font-size: 1rem;
+            }
+            .scroll-hint {
+                font-size: 0.7rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .age-number {
+                font-size: clamp(4rem, 18vw, 6rem);
+            }
+            .name-title {
+                font-size: clamp(1.8rem, 7vw, 2.5rem);
+                letter-spacing: 2px;
+            }
+            .sub-title {
+                font-size: clamp(0.7rem, 1.8vw, 1rem);
+                letter-spacing: 2px;
+            }
+            .cake-emoji {
+                font-size: clamp(3rem, 10vw, 4.5rem);
+            }
+            .wish-item {
+                font-size: clamp(0.7rem, 2.5vw, 0.9rem);
+                padding: 0.3rem 0.9rem;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- === CANVAS: ФОН === -->
+    <canvas id="particlesCanvas"></canvas>
+    <!-- === CANVAS: КОНФЕТТИ === -->
+    <canvas id="confettiCanvas"></canvas>
+
+    <!-- === BOOM FLASH === -->
+    <div class="boom-flash" id="boomFlash"></div>
+
+    <!-- === ДЕКОР === -->
+    <div class="ornament">✦</div>
+    <div class="ornament">✧</div>
+    <div class="ornament">✦</div>
+    <div class="ornament">✧</div>
+    <div class="ornament">♥</div>
+    <div class="ornament">♥</div>
+    <div class="balloon">🎈</div>
+    <div class="balloon">🎈</div>
+    <div class="balloon">🎈</div>
+    <div class="balloon">🎈</div>
+    <div class="glow-ring"></div>
+    <div class="glow-ring"></div>
+
+    <!-- ============================================================
+    1-БЕТ: СЮРПРИЗ
+    ============================================================ -->
+    <div class="page active" id="page-surprise">
+        <div class="gift-box">🎁</div>
+        <div class="surprise-title">Назеркеге арналған сюрприз...</div>
+        <div class="surprise-sub">✦ Ашу үшін бас ✦</div>
+    </div>
+
+    <!-- ============================================================
+    2-БЕТ: ҚҰТТЫҚТАУ
+    ============================================================ -->
+    <div class="page" id="page-congrats">
+        <div class="cake-emoji">
+            🎂
+            <span class="flame">🔥</span>
+        </div>
+        <div class="age-number">18</div>
+        <div class="name-title">Назерке</div>
+        <div class="sub-title">✨ Туған күніңмен! ✨</div>
+        <div class="birthday-message">
+            <span>Назерке</span>, бүгін сенің ерекше күнің! 🎉<br />
+            18 жас — өмірдің жаңа беті, жаңа мүмкіндіктер мен
+            <span>бақытты сәттер</span> толы жолың болсын!<br />
+            Армандарың орындалып, жүрегің <span>махаббат</span> пен
+            <span>қуанышқа</span> толы болсын! ❤️
+        </div>
+        <button class="next-btn" id="goToWishesBtn">
+            <span>🎉 Тілектерге өту →</span>
+        </button>
+        <div class="scroll-hint">↓ Төмен скролл жасаңыз ↓</div>
+    </div>
+
+    <!-- ============================================================
+    3-БЕТ: ТІЛЕКТЕР
+    ============================================================ -->
+    <div class="page" id="page-wishes">
+        <div class="wishes-title">💫 Назеркеге тілектер</div>
+        <div class="wishes-container" id="wishesContainer"></div>
+        <div class="scroll-hint" style="margin-top:2rem;">↑ Жоғары скролл → 2-бетке оралу</div>
+    </div>
+
+    <script>
+        // ================================================================
+        //  1. ФОНДЫҚ БӨЛШЕКТЕР (Particles)
+        // ================================================================
+        const particleCanvas = document.getElementById('particlesCanvas');
+        const pCtx = particleCanvas.getContext('2d');
+        let pW, pH;
+        const particles = [];
+        const PARTICLE_COUNT = 120;
+
+        function resizeParticleCanvas() {
+            pW = particleCanvas.width = window.innerWidth;
+            pH = particleCanvas.height = window.innerHeight;
+        }
+        resizeParticleCanvas();
+        window.addEventListener('resize', resizeParticleCanvas);
+
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+            reset() {
+                this.x = Math.random() * pW;
+                this.y = Math.random() * pH;
+                this.size = Math.random() * 6 + 2;
+                this.speedX = (Math.random() - 0.5) * 0.8;
+                this.speedY = (Math.random() - 0.5) * 0.8;
+                this.opacity = Math.random() * 0.6 + 0.2;
+                const colors = ['rgba(255,50,50,', 'rgba(255,215,0,', 'rgba(255,100,100,', 'rgba(255,180,50,'];
+                this.colorBase = colors[Math.floor(Math.random() * colors.length)];
+                this.shape = Math.random() > 0.6 ? 'heart' : 'circle';
+                this.angle = Math.random() * Math.PI * 2;
+                this.angularSpeed = (Math.random() - 0.5) * 0.02;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                this.angle += this.angularSpeed;
+                if (this.x < 0 || this.x > pW) this.speedX *= -1;
+                if (this.y < 0 || this.y > pH) this.speedY *= -1;
+                this.speedX += (Math.random() - 0.5) * 0.02;
+                this.speedY += (Math.random() - 0.5) * 0.02;
+                this.speedX = Math.max(-1, Math.min(1, this.speedX));
+                this.speedY = Math.max(-1, Math.min(1, this.speedY));
+            }
+            draw(ctx) {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.angle);
+                const alpha = this.opacity * (0.8 + 0.2 * Math.sin(Date.now() * 0.001 + this.x));
+                ctx.globalAlpha = alpha;
+                if (this.shape === 'heart') {
+                    ctx.fillStyle = this.colorBase + alpha + ')';
+                    this.drawHeart(ctx, 0, 0, this.size * 1.2);
+                } else {
+                    ctx.beginPath();
+                    ctx.arc(0, 0, this.size, 0, Math.PI * 2);
+                    ctx.fillStyle = this.colorBase + alpha + ')';
+                    ctx.fill();
+                    ctx.shadowColor = this.colorBase + (alpha * 0.5) + ')';
+                    ctx.shadowBlur = 15;
+                    ctx.fill();
+                }
+                ctx.restore();
+            }
+            drawHeart(ctx, x, y, size) {
+                ctx.beginPath();
+                ctx.moveTo(x, y - size * 0.3);
+                ctx.bezierCurveTo(x - size * 0.5, y - size * 0.8, x - size * 0.8, y - size * 0.1, x, y + size * 0.3);
+                ctx.bezierCurveTo(x + size * 0.8, y - size * 0.1, x + size * 0.5, y - size * 0.8, x, y - size * 0.3);
+                ctx.fill();
+            }
+        }
+        for (let i = 0; i < PARTICLE_COUNT; i++) particles.push(new Particle());
+
+        function animateParticles() {
+            pCtx.clearRect(0, 0, pW, pH);
+            particles.forEach(p => { p.update();
+                p.draw(pCtx); });
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        // ================================================================
+        //  2. КОНФЕТТИ
+        // ================================================================
+        const confettiCanvas = document.getElementById('confettiCanvas');
+        const cCtx = confettiCanvas.getContext('2d');
+        let cW, cH;
+        let confettiPieces = [];
+        let confettiRunning = false;
+        let confettiAnimationFrame = null;
+
+        function resizeConfettiCanvas() {
+            cW = confettiCanvas.width = window.innerWidth;
+            cH = confettiCanvas.height = window.innerHeight;
+        }
+        resizeConfettiCanvas();
+        window.addEventListener('resize', resizeConfettiCanvas);
+
+        class ConfettiPiece {
+            constructor() { this.reset();
+                this.y = Math.random() * cH - cH; }
+            reset() {
+                this.x = Math.random() * cW;
+                this.y = Math.random() * cH - cH;
+                this.size = Math.random() * 10 + 4;
+                this.speedY = Math.random() * 4 + 2;
+                this.speedX = (Math.random() - 0.5) * 3;
+                this.rotation = Math.random() * 360;
+                this.rotSpeed = (Math.random() - 0.5) * 10;
+                const colors = ['#ff1a1a', '#ffd700', '#ff4444', '#ff6b00', '#ff8888', '#ffcc00', '#ff3333', '#ffaa00'];
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+                this.shape = Math.random() > 0.5 ? 'rect' : 'circle';
+                this.wobble = Math.random() * 10;
+                this.wobbleSpeed = Math.random() * 0.1 + 0.05;
+                this.life = 1;
+            }
+            update() {
+                this.y += this.speedY;
+                this.x += this.speedX + Math.sin(this.wobble) * 0.5;
+                this.rotation += this.rotSpeed;
+                this.wobble += this.wobbleSpeed;
+                this.life -= 0.0015;
+                if (this.y > cH + 50) { this.reset();
+                    this.y = -20 - Math.random() * 50; }
+                if (this.x < -50) this.x = cW + 50;
+                if (this.x > cW + 50) this.x = -50;
+            }
+            draw(ctx) {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate((this.rotation * Math.PI) / 180);
+                ctx.globalAlpha = Math.max(0, this.life);
+                ctx.fillStyle = this.color;
+                if (this.shape === 'rect') ctx.fillRect(-this.size / 2, -this.size / 4, this.size, this.size / 2);
+                else { ctx.beginPath();
+                    ctx.arc(0, 0, this.size / 2, 0, Math.PI * 2);
+                    ctx.fill(); }
+                ctx.restore();
+            }
+        }
+
+        function startConfetti(count = 180) {
+            confettiPieces = [];
+            for (let i = 0; i < count; i++) { const p = new ConfettiPiece();
+                p.y = Math.random() * cH - cH * 0.5;
+                confettiPieces.push(p); }
+            confettiRunning = true;
+            if (!confettiAnimationFrame) animateConfetti();
+        }
+
+        function animateConfetti() {
+            cCtx.clearRect(0, 0, cW, cH);
+            let alive = false;
+            confettiPieces.forEach(p => { p.update();
+                p.draw(cCtx); if (p.life > 0.01) alive = true; });
+            if (alive || confettiRunning) { confettiAnimationFrame = requestAnimationFrame(animateConfetti); } else {
+                confettiAnimationFrame = null;
+                confettiRunning = false; }
+        }
+
+        // ================================================================
+        //  3. ҰШАТЫН ЖҮРЕКТЕР
+        // ================================================================
+        function createFloatingHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'heart-float';
+            const emojis = ['❤️', '💖', '💗', '♥️', '💝', '✨', '🌟', '💥'];
+            heart.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+            heart.style.left = (Math.random() * 90 + 5) + '%';
+            heart.style.fontSize = (Math.random() * 2.5 + 1.5) + 'rem';
+            heart.style.animationDuration = (Math.random() * 3 + 3) + 's';
+            heart.style.animationDelay = (Math.random() * 0.5) + 's';
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 6000);
+        }
+
+        function burstHearts(count = 30) {
+            for (let i = 0; i < count; i++) setTimeout(createFloatingHeart, i * 70);
+        }
+
+        // ================================================================
+        //  4. ТІЛЕКТЕР (Wishes)
+        // ================================================================
+        const wishesList = [
+            "🥳 18 жас - үлкен белес!",
+            "🌟 Арманың орындалсын!",
+            "❤️ Махаббатқа толы бол!",
+            "💪 Табысқа жет!",
+            "🍀 Бақытты бол!",
+            "☀️ Өмірің жарқын болсын!",
+            "💖 Қуаныш күлімдесін!",
+            "✨ Денің сау болсын!"
+        ];
+
+        function spawnWishes() {
+            const container = document.getElementById('wishesContainer');
+            container.innerHTML = '';
+            const shuffled = [...wishesList].sort(() => Math.random() - 0.5);
+            shuffled.forEach((text, index) => {
+                const el = document.createElement('div');
+                el.className = 'wish-item';
+                el.textContent = text;
+                const tx = (Math.random() - 0.5) * 140;
+                const ty = (Math.random() - 0.5) * 140;
+                el.style.setProperty('--tx', tx + 'px');
+                el.style.setProperty('--ty', ty + 'px');
+                container.appendChild(el);
+                const delay = 0.1 + index * 0.1;
+                setTimeout(() => { el.classList.add('boom-visible'); }, delay * 1000);
+            });
+        }
+
+        // ================================================================
+        //  5. БЕТТЕРДІ БАСҚАРУ (Page Navigation)
+        // ================================================================
+        const pageSurprise = document.getElementById('page-surprise');
+        const pageCongrats = document.getElementById('page-congrats');
+        const pageWishes = document.getElementById('page-wishes');
+        const boomFlash = document.getElementById('boomFlash');
+
+        let isRevealed = false;
+        let currentPage = 0; // 0:surprise, 1:congrats, 2:wishes
+        let isPageTransitioning = false;
+
+        function showPage(pageId) {
+            [pageSurprise, pageCongrats, pageWishes].forEach(p => p.classList.remove('active'));
+            if (pageId === 'surprise') { pageSurprise.classList.add('active');
+                currentPage = 0; } else if (pageId === 'congrats') { pageCongrats.classList.add('active');
+                currentPage = 1; } else if (pageId === 'wishes') { pageWishes.classList.add('active');
+                currentPage = 2; }
+        }
+
+        // --- СЮРПРИЗДЕН ҚҰТТЫҚТАУҒА ---
+        function triggerBoom() {
+            if (isRevealed) return;
+            isRevealed = true;
+
+            // Flash
+            boomFlash.classList.add('active');
+            setTimeout(() => boomFlash.classList.remove('active'), 300);
+
+            // Конфетти + жүректер
+            startConfetti(400);
+            burstHearts(60);
+
+            // 1-бетті жасырып, 2-бетті көрсету
+            showPage('congrats');
+
+            // Қосымша толқындар
+            setTimeout(() => startConfetti(200), 600);
+            setTimeout(() => startConfetti(150), 1400);
+            setTimeout(() => burstHearts(30), 1000);
+        }
+
+        // --- ҚҰТТЫҚТАУДАН ТІЛЕКТЕРГЕ ---
+        function goToWishes() {
+            if (pageWishes.classList.contains('active')) return;
+            if (isPageTransitioning) return;
+            isPageTransitioning = true;
+
+            showPage('wishes');
+            // Тілектерді іске қосу
+            setTimeout(() => {
+                spawnWishes();
+                startConfetti(120);
+                burstHearts(25);
+            }, 400);
+            setTimeout(() => startConfetti(80), 1500);
+            setTimeout(() => burstHearts(15), 1200);
+            setTimeout(() => { isPageTransitioning = false; }, 800);
+        }
+
+        // --- ТІЛЕКТЕРДЕН ҚҰТТЫҚТАУҒА ОРАЛУ ---
+        function goToCongrats() {
+            if (pageCongrats.classList.contains('active')) return;
+            if (isPageTransitioning) return;
+            isPageTransitioning = true;
+            showPage('congrats');
+            // Кішкене конфетти
+            startConfetti(50);
+            burstHearts(10);
+            setTimeout(() => { isPageTransitioning = false; }, 800);
+        }
+
+        // ================================================================
+        //  6. СКРОЛЛ ЖӘНЕ СЕНСОРЛЫҚ БАСҚАРУ
+        // ================================================================
+        // Тышқан дөңгелегі (wheel)
+        let scrollLock = false;
+        window.addEventListener('wheel', (e) => {
+            if (scrollLock) return;
+            if (!isRevealed) return; // Тек сюрприз ашылғаннан кейін
+
+            const delta = e.deltaY;
+            // Төмен скролл -> 3-бет
+            if (delta > 20 && currentPage === 1) {
+                scrollLock = true;
+                goToWishes();
+                setTimeout(() => { scrollLock = false; }, 1200);
+            }
+            // Жоғары скролл -> 2-бет
+            else if (delta < -20 && currentPage === 2) {
+                scrollLock = true;
+                goToCongrats();
+                setTimeout(() => { scrollLock = false; }, 1200);
+            }
+        }, { passive: true });
+
+        // Мобильді сенсорлық (touch)
+        let touchStartY = 0;
+        window.addEventListener('touchstart', (e) => {
+            touchStartY = e.changedTouches[0].screenY;
+        }, { passive: true });
+
+        window.addEventListener('touchend', (e) => {
+            if (!isRevealed) return;
+            if (scrollLock) return;
+            const diff = touchStartY - e.changedTouches[0].screenY;
+            if (Math.abs(diff) > 50) {
+                if (diff > 0 && currentPage === 1) {
+                    scrollLock = true;
+                    goToWishes();
+                    setTimeout(() => { scrollLock = false; }, 1200);
+                } else if (diff < 0 && currentPage === 2) {
+                    scrollLock = true;
+                    goToCongrats();
+                    setTimeout(() => { scrollLock = false; }, 1200);
+                }
+            }
+        }, { passive: true });
+
+        // ================================================================
+        //  7. ОҚИҒАЛАРДЫ БАЙЛАНЫСТЫРУ
+        // ================================================================
+        // 1-бет: басу арқылы
+        pageSurprise.addEventListener('click', triggerBoom);
+
+        // 2-бет: «Тілектерге өту» батырмасы
+        document.getElementById('goToWishesBtn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            goToWishes();
+        });
+
+        // Клавиатура: пробел / Enter
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' || e.code === 'Enter') {
+                e.preventDefault();
+                if (!isRevealed) {
+                    triggerBoom();
+                } else if (currentPage === 1) {
+                    goToWishes();
+                } else if (currentPage === 2) {
+                    // Қайта тілектерді жаңарту
+                    spawnWishes();
+                    startConfetti(150);
+                    burstHearts(30);
+                }
+            }
+        });
+
+        // Авто-сюрприз (егер баспаса, 3.5 секундтан кейін)
+        setTimeout(() => {
+            if (!isRevealed) triggerBoom();
+        }, 3500);
+
+        // ================================================================
+        //  8. ПАРАЛЛАКС (тышқан)
+        // ================================================================
+        document.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth - 0.5) * 10;
+            const y = (e.clientY / window.innerHeight - 0.5) * 10;
+            const age = document.querySelector('.age-number');
+            const name = document.querySelector('.name-title');
+            const cake = document.querySelector('.cake-emoji');
+            if (age && pageCongrats.classList.contains('active')) {
+                age.style.transform = `translate(${x * 0.5}px, ${y * 0.5}px)`;
+            }
+            if (name && pageCongrats.classList.contains('active')) {
+                name.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
+            }
+            if (cake && pageCongrats.classList.contains('active')) {
+                cake.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
+            }
+        });
+
+        // ================================================================
+        //  9. АВТО-КОНФЕТТИ (әр 20 секунд)
+        // ================================================================
+        setInterval(() => {
+            if (isRevealed && !confettiRunning) {
+                startConfetti(50);
+                burstHearts(10);
+            }
+        }, 20000);
+
+        console.log('🎁 3 бет дайын! Төмен скролл жасап, тілектерді көріңіз! 🎉');
+    </script>
+</body>
+</html>
